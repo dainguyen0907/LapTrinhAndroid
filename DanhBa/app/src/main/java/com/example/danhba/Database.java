@@ -26,9 +26,9 @@ public class Database extends SQLiteOpenHelper {
     // Insert
     public void insertData(String ten, Long sodienthoai, byte[] hinhanh, String Email, String DiaChi, String ngaysinh, String mxh)
     {
-        SQLiteDatabase database=getReadableDatabase();
-        String sqlCommand="INSERT INTO DanhBa VALUES(null,?,?,?,?,?,?,?,false,false)";
-        SQLiteStatement statement=database.compileStatement(sqlCommand);
+        SQLiteDatabase database=getWritableDatabase();
+        String sql="INSERT INTO DanhBa VALUES(null,?,?,?,?,?,?,?,0,0)";
+        SQLiteStatement statement=database.compileStatement(sql);
         statement.clearBindings();
 
         statement.bindString(1,ten);

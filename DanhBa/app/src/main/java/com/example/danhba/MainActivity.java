@@ -3,29 +3,22 @@ package com.example.danhba;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
+
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import info.androidhive.fontawesome.FontDrawable;
 
@@ -33,16 +26,25 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     DrawerLayout drawerLayout;
-    ListView listmenu;
     NavigationView navigationView;
-    Database database;
+    public static Database database;
+    ViewPager viewPager;
+    TabLayout tabLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AnhXa();
+        CreateDatabase();
         intDrawerLayout();
         ActionBar();
+        InitTablayout();
+
+    }
+
+    private void InitTablayout() {
+        viewPager.setAdapter(new AdapterFragment(getSupportFragmentManager()));
+        tabLayout.setupWithViewPager(viewPager);
 
     }
 
@@ -97,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar=findViewById(R.id.toolbarMain);
         drawerLayout=findViewById(R.id.drawerMain);
         navigationView = (NavigationView) findViewById(R.id.navigation_main);
+        tabLayout=findViewById(R.id.tablayout_main);
+        viewPager=findViewById(R.id.vp_main);
     }
 
     //Gọi menubar
@@ -147,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
         // Tạo database
         database=new Database(this,"danhba.sqlite",null,1);
         //Tạo bảng
-        database.QueryData("CREATE TABLE IF NOT EXISTS DanhBa(Id INTEGER PRIMARY KEY AUTOINCREMENT, Ten VARCHAR(10), SoDienThoai NUMBER(11),HinhAnh BLOB, NgaySinh DATE, Email VARCHAR, DiaChi VARCHAR, MangXaHoi VARCHAR ,YeuThich BOOLEAN, User BOOLEAN ");
+        database.QueryData("CREATE TABLE IF NOT EXISTS DanhBa(Id INTEGER PRIMARY KEY AUTOINCREMENT, Ten VARCHAR(10), SoDienThoai NUMBER(11),HinhAnh BLOB, NgaySinh DATE, Email VARCHAR(100), DiaChi VARCHAR(200), MangXaHoi VARCHAR(100) ,YeuThich BOOLEAN, User BOOLEAN) ");
+
 
     }
 
