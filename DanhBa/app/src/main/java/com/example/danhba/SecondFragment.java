@@ -1,8 +1,6 @@
 package com.example.danhba;
 
-import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,15 +34,19 @@ public class SecondFragment extends Fragment {
         customListAdapter =new CustomListAdapter(arrayList,R.layout.itemgridviewdanhba,getActivity());
         gridView.setAdapter(customListAdapter);
 
-        Cursor cursor= MainActivity.database.GetData("SELECT * FROM DanhBa WHERE User=0");
+        Cursor cursor= MainActivity.database.GetData("SELECT * FROM DanhBa WHERE User=0 ORDER BY Ten ASC");
         while(cursor.moveToNext()){
             arrayList.add(new DanhBa(
                     cursor.getString(1),
                     cursor.getInt(0),
                     cursor.getBlob(3)
             ));
+
         }
 
         customListAdapter.notifyDataSetChanged();
+
     }
+
+
 }

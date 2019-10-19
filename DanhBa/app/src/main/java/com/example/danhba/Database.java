@@ -2,6 +2,7 @@ package com.example.danhba;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
@@ -47,6 +48,8 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase database=getReadableDatabase();
         return database.rawQuery(sqlCommand,null);
     }
+    //
+
     @Override
     public void onCreate(SQLiteDatabase db) {
     }

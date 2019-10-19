@@ -4,13 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -19,6 +26,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
+
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 
 import info.androidhive.fontawesome.FontDrawable;
 
@@ -30,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     public static Database database;
     ViewPager viewPager;
     TabLayout tabLayout;
+
+    final int REQUEST_READ_CONTACT=123;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,12 +77,24 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     //Định dạng lại menu navigation
     private void intDrawerLayout() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId())
+                {
+                    case R.id.nav_home:
+                        break;
+                    case R.id.nav_user:
+                        break;
+                    case R.id.nav_exit:
+                        finish();
+                        break;
+                }
                 return false;
             }
         });
@@ -124,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.find:
-                //code xử lý khi bấm menu1
                 break;
             case R.id.add_user:
             {
@@ -132,8 +155,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
                 break;
-            case R.id.menu3:
-                //code xử lý khi bấm menu3
+            case R.id.add_user_from_sim:
+               ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACT);
+
                 break;
             default:break;
         }
@@ -141,9 +165,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean onNavigationItemSelected(MenuItem item) {
-        return true;
-    }
+
 
     //Tạo SQLite
     public void CreateDatabase()
@@ -152,10 +174,44 @@ public class MainActivity extends AppCompatActivity {
         database=new Database(this,"danhba.sqlite",null,1);
         //Tạo bảng
         database.QueryData("CREATE TABLE IF NOT EXISTS DanhBa(Id INTEGER PRIMARY KEY AUTOINCREMENT, Ten VARCHAR(10), SoDienThoai NUMBER(11),HinhAnh BLOB, NgaySinh DATE, Email VARCHAR(100), DiaChi VARCHAR(200), MangXaHoi VARCHAR(100) ,YeuThich BOOLEAN, User BOOLEAN) ");
-
-
     }
 
-
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode)
+        {
+            case REQUEST_READ_CONTACT:
+            {
+                if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED)
+                {
+                    ContentResolver contentResolver=getContentResolver();
+                    Cursor cursor=contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
+                    while (cursor.moveToNext())
+                    {
+                        String id=cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                        int hasPhoneNumber=Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
+                        long sodienthoai=0;
+                        if(hasPhoneNumber==1)
+                        {
+                            Cursor Phone=getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,null, null);
+                            Phone.moveToFirst();
+                            sodienthoai=Long.parseLong(Phone.getString(Phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        }
+                        Cursor cursorCheck=database.GetData("SELECT * FROM DanhBa WHERE Ten='"+cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))+"' AND SoDienThoai='"+sodienthoai+"' AND User=0");
+                        if(cursorCheck.moveToFirst()==false)
+                        {
+                            database.insertData(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
+                                    sodienthoai,
+                                    new byte[]{},"","","","");
+                        }
+                    }
+                    Toast.makeText(this,"Cập nhật thành công ",Toast.LENGTH_SHORT).show();
+                }
+                else
+                    Toast.makeText(this,"Chưa cấp quyền truy cập danh bạ ",Toast.LENGTH_SHORT).show();
+            }
+                break;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

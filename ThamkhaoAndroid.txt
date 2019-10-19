@@ -3,3 +3,4 @@ https://o7planning.org/vi/10435/huong-dan-android-listview
 https://viblo.asia/p/su-dung-font-awesome-icons-trong-android-gDVK22pnKLj
 https://www.youtube.com/watch?v=ssy_zdYuISQ
 https://www.youtube.com/playlist?list=PL5uqQAwS_KDjAgLGiaCakwJV1f4vRnTLS
+https://stackoverflow.com/questions/13757022/how-to-get-all-sim-contacts-in-android-programmatically

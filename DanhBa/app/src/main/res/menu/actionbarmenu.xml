@@ -3,20 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/find"
-        android:icon="@drawable/search"
+        android:icon="@drawable/ic_search_black_24dp"
         android:title="Menu 1"
         app:showAsAction="always"
-
         />
     <item
         android:id="@+id/add_user"
-        android:icon="@drawable/adduser"
+        android:icon="@drawable/ic_person_add_black_24dp"
         android:title="Menu 2"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/menu3"
+        android:id="@+id/add_user_from_sim"
         android:checkable="false"
         android:icon="@android:drawable/ic_lock_silent_mode"
-        android:title="Menu3"
-        app:showAsAction="never"/>
+        android:title="Thêm liên hệ từ sim"
+        app:showAsAction="withText"/>
+    <item
+        android:id="@+id/choose_item"
+        android:checkable="false"
+        android:icon="@android:drawable/ic_lock_silent_mode"
+        android:title="Chọn liên hệ"
+        app:showAsAction="withText"/>
+
+
 </menu>
