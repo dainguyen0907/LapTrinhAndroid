@@ -17,41 +17,62 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbarMain"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="#FFC107"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="?attr/actionBarTheme"
-                app:title="G-connect"
-                app:titleTextColor="#FFFFFF" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tablayout_main"
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbarMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="#FFC107"
+                    android:minHeight="?attr/actionBarSize"
+                    android:theme="?attr/actionBarTheme"
+                    app:title="G-connect"
+                    app:titleTextColor="#FFFFFF" />
+                <com.miguelcatalan.materialsearchview.MaterialSearchView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FFC107"
-                    app:tabIndicatorColor="#F8ECEC"
-                    app:tabIndicatorGravity="bottom"
-                    app:tabMode="fixed"
-                    app:tabTextColor="#FFFFFF">
-
-
-                </com.google.android.material.tabs.TabLayout>
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/vp_main"
+                    android:id="@+id/search_view"/>
+            </FrameLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <GridView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/gridview_search"
+                    android:numColumns="3"
+                    android:visibility="invisible">
+                </GridView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/tablayout_container"
+                    android:visibility="visible">
 
-                </androidx.viewpager.widget.ViewPager>
-            </LinearLayout>
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tablayout_main"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFC107"
+                        app:tabIndicatorColor="#F8ECEC"
+                        app:tabIndicatorGravity="bottom"
+                        app:tabMode="fixed"
+                        app:tabTextColor="#FFFFFF">
+
+
+                    </com.google.android.material.tabs.TabLayout>
+                    <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/vp_main"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    </androidx.viewpager.widget.ViewPager>
+                </LinearLayout>
+            </FrameLayout>
+
 
 
         </LinearLayout>

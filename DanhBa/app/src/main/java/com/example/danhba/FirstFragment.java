@@ -61,7 +61,7 @@ public class FirstFragment extends Fragment {
                 String icon="@string/fa_times_solid";
                 byte[] Avatar={};
 
-                Cursor search=MainActivity.database.GetData("SELECT Ten,HinhAnh FROM DanhBa Where SoDienThoai="+number);
+                Cursor search=MainActivity.database.GetData("SELECT Ten,HinhAnh FROM DanhBa Where SoDienThoai='"+number+"'");
                 if(search.moveToFirst()==true)
                 {
                     search.moveToFirst();

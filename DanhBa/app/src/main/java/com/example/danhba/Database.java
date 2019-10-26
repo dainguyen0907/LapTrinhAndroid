@@ -25,7 +25,7 @@ public class Database extends SQLiteOpenHelper {
 
     }
     // Insert
-    public void insertData(String ten, Long sodienthoai, byte[] hinhanh, String Email, String DiaChi, String ngaysinh, String mxh)
+    public void insertData(String ten, String sodienthoai, byte[] hinhanh, String Email, String DiaChi, String ngaysinh, String mxh)
     {
         SQLiteDatabase database=getWritableDatabase();
         String sql="INSERT INTO DanhBa VALUES(null,?,?,?,?,?,?,?,0,0)";
@@ -33,7 +33,7 @@ public class Database extends SQLiteOpenHelper {
         statement.clearBindings();
 
         statement.bindString(1,ten);
-        statement.bindLong(2,sodienthoai);
+        statement.bindString(2,sodienthoai);
         statement.bindBlob(3,hinhanh);
         statement.bindString(4,ngaysinh);
         statement.bindString(5,Email);

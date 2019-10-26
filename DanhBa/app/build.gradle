@@ -30,4 +30,5 @@ dependencies {
     implementation 'info.androidhive:fontawesome:0.0.5'
     //noinspection GradleCompatible
     implementation 'com.android.support:cardview-v7:27.+'
+    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 }

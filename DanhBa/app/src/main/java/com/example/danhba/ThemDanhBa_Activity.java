@@ -25,6 +25,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -41,7 +42,8 @@ import info.androidhive.fontawesome.FontDrawable;
 public class ThemDanhBa_Activity extends AppCompatActivity {
 
     Toolbar toolbar;
-    EditText ngaysinh, ten, sodienthoai, diachi, email, mxh;
+    EditText  ten, sodienthoai, diachi, email, mxh,ngaysinh;
+
     ImageButton avatar;
     DatePickerDialog.OnDateSetListener datePickerDialog;
 
@@ -104,7 +106,7 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
                     byte[] hinh = byteArrayOutputStream.toByteArray();
 
-                    long sdt = Long.parseLong(sodienthoai.getText().toString().trim());
+                    String sdt = sodienthoai.getText().toString().trim();
                     MainActivity.database.insertData(
                             ten.getText().toString().trim(),
                             sdt,

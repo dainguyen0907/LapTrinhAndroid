@@ -14,6 +14,8 @@ import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -25,10 +27,12 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import info.androidhive.fontawesome.FontDrawable;
 
@@ -40,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     public static Database database;
     ViewPager viewPager;
     TabLayout tabLayout;
+    MaterialSearchView searchView;
+    GridView search_gridview;
+    LinearLayout tablayoutcontainer;
 
     final int REQUEST_READ_CONTACT=123;
     @Override
@@ -51,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         intDrawerLayout();
         ActionBar();
         InitTablayout();
+
+
 
     }
 
@@ -125,6 +134,9 @@ public class MainActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.navigation_main);
         tabLayout=findViewById(R.id.tablayout_main);
         viewPager=findViewById(R.id.vp_main);
+        searchView=findViewById(R.id.search_view);
+        search_gridview=findViewById(R.id.gridview_search);
+        tablayoutcontainer=findViewById(R.id.tablayout_container);
     }
 
     //Gọi menubar
@@ -135,7 +147,56 @@ public class MainActivity extends AppCompatActivity {
         iconMenu.setTextColor(ContextCompat.getColor(this, android.R.color.white));
         iconMenu.setTextSize(22);
         toolbar.setOverflowIcon(iconMenu);
+
+        MenuItem search= menu.findItem(R.id.find);
+        searchView.setMenuItem(search);
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+                search_gridview.setVisibility(View.VISIBLE);
+                tablayoutcontainer.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+
+                search_gridview.setVisibility(View.INVISIBLE);
+                tablayoutcontainer.setVisibility(View.VISIBLE);
+            }
+        });
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                query(newText);
+                return false;
+            }
+        });
+
         return true;
+    }
+
+    private void query(String query) {
+        ArrayList<DanhBa>arrayList=new ArrayList<>();
+        CustomListAdapter customListAdapter =new CustomListAdapter(arrayList,R.layout.itemgridviewdanhba,this);
+        search_gridview.setAdapter(customListAdapter);
+
+        Cursor cursor= MainActivity.database.GetData("SELECT * FROM DanhBa WHERE User=0 AND (Ten LIKE '%"+query+"%' OR SoDienThoai LIKE '%"+query+"%') ORDER BY Ten ASC");
+        while(cursor.moveToNext()){
+            arrayList.add(new DanhBa(
+                    cursor.getString(1),
+                    cursor.getInt(0),
+                    cursor.getBlob(3)
+            ));
+
+        }
+
+        customListAdapter.notifyDataSetChanged();
     }
 
     // Sự kiện click vào OptionsMenu
@@ -148,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.find:
+            {
+            }
                 break;
             case R.id.add_user:
             {
@@ -173,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         // Tạo database
         database=new Database(this,"danhba.sqlite",null,1);
         //Tạo bảng
-        database.QueryData("CREATE TABLE IF NOT EXISTS DanhBa(Id INTEGER PRIMARY KEY AUTOINCREMENT, Ten VARCHAR(10), SoDienThoai NUMBER(11),HinhAnh BLOB, NgaySinh DATE, Email VARCHAR(100), DiaChi VARCHAR(200), MangXaHoi VARCHAR(100) ,YeuThich BOOLEAN, User BOOLEAN) ");
+        database.QueryData("CREATE TABLE IF NOT EXISTS DanhBa(Id INTEGER PRIMARY KEY AUTOINCREMENT, Ten VARCHAR(10), SoDienThoai TEXT,HinhAnh BLOB, NgaySinh DATE, Email VARCHAR(100), DiaChi VARCHAR(200), MangXaHoi VARCHAR(100) ,YeuThich BOOLEAN, User BOOLEAN) ");
     }
 
     @Override
@@ -190,12 +253,12 @@ public class MainActivity extends AppCompatActivity {
                     {
                         String id=cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                         int hasPhoneNumber=Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
-                        long sodienthoai=0;
+                        String sodienthoai="";
                         if(hasPhoneNumber==1)
                         {
                             Cursor Phone=getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,null, null);
                             Phone.moveToFirst();
-                            sodienthoai=Long.parseLong(Phone.getString(Phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                            sodienthoai=Phone.getString(Phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         }
                         Cursor cursorCheck=database.GetData("SELECT * FROM DanhBa WHERE Ten='"+cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))+"' AND SoDienThoai='"+sodienthoai+"' AND User=0");
                         if(cursorCheck.moveToFirst()==false)
@@ -214,4 +277,8 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
+
+
+
 }
