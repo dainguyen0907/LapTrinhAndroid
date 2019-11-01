@@ -20,7 +20,8 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/framelayout_toolbar">
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbarMain"
                     android:layout_width="match_parent"
