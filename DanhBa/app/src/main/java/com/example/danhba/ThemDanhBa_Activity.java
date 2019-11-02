@@ -59,6 +59,12 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
         DesignNgaySinhBox();
 
         registerForContextMenu(avatar);
+        Intent intent=getIntent();
+        Bundle bundle=intent.getExtras();
+        if(bundle!=null)
+        {
+            sodienthoai.setText(bundle.getString("sdt"));
+        }
     }
     private void AnhXa()
     {

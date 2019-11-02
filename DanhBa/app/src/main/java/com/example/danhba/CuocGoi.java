@@ -3,18 +3,28 @@ package com.example.danhba;
 public class CuocGoi {
     private byte[] hinh;
     private String ten;
+    private String sodienthoai;
     private  String icon;
     private String ngaygoi;
 
-    public CuocGoi(byte[] hinh, String ten, String icon, String ngaygoi) {
+    public CuocGoi(byte[] hinh, String ten,String Sodienthoai, String icon, String ngaygoi) {
         this.hinh = hinh;
         this.ten = ten;
+        this.sodienthoai=Sodienthoai;
         this.icon = icon;
         this.ngaygoi = ngaygoi;
     }
 
     public byte[] getHinh() {
         return hinh;
+    }
+
+    public String getSodienthoai() {
+        return sodienthoai;
+    }
+
+    public void setSodienthoai(String sodienthoai) {
+        this.sodienthoai = sodienthoai;
     }
 
     public void setHinh(byte[] hinh) {

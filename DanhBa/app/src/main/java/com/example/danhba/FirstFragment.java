@@ -1,15 +1,24 @@
 package com.example.danhba;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,18 +35,24 @@ public class FirstFragment extends Fragment {
     ArrayList<CuocGoi> arrayList;
     CallLogAdapter callLogAdapter;
     final int REQUEST_READ_LOG_CALL=111;
+    final int REQUEST_CALL=222;
+    final int REQUEST_MESSEAAGE=333;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView=inflater.inflate(R.layout.fragment_first,container,false);
         listView=rootView.findViewById(R.id.list_call_log);
-        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALL_LOG}, REQUEST_READ_LOG_CALL);
+        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CALL_LOG )!=PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALL_LOG}, REQUEST_READ_LOG_CALL);
+        }
         return rootView;
     }
 
     @Override
     public void onResume() {
+
         super.onResume();
         if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CALL_LOG )==PackageManager.PERMISSION_GRANTED)
         {
@@ -81,9 +96,84 @@ public class FirstFragment extends Fragment {
                         icon="\uf00d";
                         break;
                 }
-                arrayList.add(new CuocGoi(Avatar,Name,icon,date));
+                arrayList.add(new CuocGoi(Avatar,Name,number,icon,date));
             }
             callLogAdapter.notifyDataSetChanged();
+            registerForContextMenu(listView);
+
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getActivity().getMenuInflater().inflate(R.menu.callog_menucontext,menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info= (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        CuocGoi c= arrayList.get(info.position);
+        switch (item.getItemId())
+        {
+            case R.id.menu_call: {
+                if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.CALL_PHONE)==PackageManager.PERMISSION_GRANTED)
+                {
+                    intentCall(c.getSodienthoai());
+                }
+                else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+                }
+                return true;
+            }
+            case R.id.menu_messege:{
+                if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.SEND_SMS)==PackageManager.PERMISSION_GRANTED)
+                {
+                    intentSendSMS(c.getSodienthoai());
+                }
+                else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SEND_SMS}, REQUEST_MESSEAAGE);
+                }
+                return true;
+            }
+            case R.id.menu_add_user: {
+                if(c.getTen()==c.getSodienthoai())
+                {
+                    Intent intent=new Intent(getActivity(),ThemDanhBa_Activity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("sdt",c.getSodienthoai());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+                else
+                    Toast.makeText(getActivity(),"Đã có người này trong danh bạ",Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            case R.id.menu_copy: {
+                ClipboardManager clipboardManager= (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData=ClipData.newPlainText("copy",c.getSodienthoai());
+                clipboardManager.setPrimaryClip(clipData);
+                Toast.makeText(getActivity(),"Đã sao chép số",Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            default: return super.onContextItemSelected(item);
+        }
+
+    }
+
+    private void intentCall(String number)
+    {
+        Intent intent=new Intent();
+        intent.setAction(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:"+number));
+        startActivity(intent);
+    }
+
+    private  void intentSendSMS(String number)
+    {
+        Intent intent=new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("sms:"+number));
+        startActivity(intent);
     }
 }
