@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         customListAdapter.notifyDataSetChanged();
+
     }
 
     // Sự kiện click vào OptionsMenu

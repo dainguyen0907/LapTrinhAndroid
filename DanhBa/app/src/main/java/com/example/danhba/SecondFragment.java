@@ -2,6 +2,7 @@ package com.example.danhba;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.AnalogClock;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -56,8 +58,14 @@ public class SecondFragment extends Fragment {
             ));
 
         }
-
         customListAdapter.notifyDataSetChanged();
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent=new Intent(getActivity(),ChiTiet_Activity.class);
+                startActivity(intent);
+            }
+        });
         gridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
         gridView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
@@ -118,6 +126,8 @@ public class SecondFragment extends Fragment {
                 customListAdapter.removeSelection();
             }
         });
+
+
 
     }
 
