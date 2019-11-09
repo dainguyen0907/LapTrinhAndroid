@@ -142,6 +142,7 @@ public class FirstFragment extends Fragment {
                     Intent intent=new Intent(getActivity(),ThemDanhBa_Activity.class);
                     Bundle bundle=new Bundle();
                     bundle.putString("sdt",c.getSodienthoai());
+                    bundle.putInt("id",-1);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

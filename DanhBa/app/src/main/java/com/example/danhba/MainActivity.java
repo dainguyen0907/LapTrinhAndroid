@@ -11,12 +11,10 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.FrameLayout;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -33,8 +31,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import info.androidhive.fontawesome.FontDrawable;
@@ -50,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     MaterialSearchView searchView;
     GridView search_gridview;
     LinearLayout tablayoutcontainer;
-
+    ArrayList<DanhBa>arrayList;
     final int REQUEST_READ_CONTACT=123;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void query(String query) {
-        ArrayList<DanhBa>arrayList=new ArrayList<>();
+        arrayList=new ArrayList<>();
         CustomListAdapter customListAdapter =new CustomListAdapter(arrayList,R.layout.itemgridviewdanhba,this);
         search_gridview.setAdapter(customListAdapter);
 
@@ -201,6 +197,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         customListAdapter.notifyDataSetChanged();
+        search_gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                DanhBa d=arrayList.get(position);
+                Intent intent=new Intent(MainActivity.this,ChiTiet_Activity.class);
+                intent.putExtra("id",d.getId());
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -268,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                         Cursor cursorCheck=database.GetData("SELECT * FROM DanhBa WHERE Ten='"+cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))+"' AND SoDienThoai='"+sodienthoai+"' AND User=0");
                         if(cursorCheck.moveToFirst()==false)
                         {
-                            database.insertData(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
+                            database.insertDataDanhBa(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
                                     sodienthoai,
                                     new byte[]{},"","","","");
                         }

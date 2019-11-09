@@ -3,11 +3,11 @@ package com.example.danhba;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -24,8 +24,6 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -35,7 +33,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
 
-import javax.xml.transform.Result;
 
 import info.androidhive.fontawesome.FontDrawable;
 
@@ -43,6 +40,7 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
 
     Toolbar toolbar;
     EditText  ten, sodienthoai, diachi, email, mxh,ngaysinh;
+    int _id=-1;
 
     ImageButton avatar;
     DatePickerDialog.OnDateSetListener datePickerDialog;
@@ -59,12 +57,7 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
         DesignNgaySinhBox();
 
         registerForContextMenu(avatar);
-        Intent intent=getIntent();
-        Bundle bundle=intent.getExtras();
-        if(bundle!=null)
-        {
-            sodienthoai.setText(bundle.getString("sdt"));
-        }
+
     }
     private void AnhXa()
     {
@@ -105,7 +98,7 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
                 {
                     Toast.makeText(ThemDanhBa_Activity.this, "Chưa nhập số điện thoại", Toast.LENGTH_SHORT).show();
                 }
-                else {
+                else if(_id==-1){
                     BitmapDrawable bitmapDrawable = (BitmapDrawable) avatar.getDrawable();
                     Bitmap bitmap = bitmapDrawable.getBitmap();
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -113,7 +106,7 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
                     byte[] hinh = byteArrayOutputStream.toByteArray();
 
                     String sdt = sodienthoai.getText().toString().trim();
-                    MainActivity.database.insertData(
+                    MainActivity.database.insertDataDanhBa(
                             ten.getText().toString().trim(),
                             sdt,
                             hinh,
@@ -123,6 +116,22 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
                             mxh.getText().toString().trim());
                     Toast.makeText(ThemDanhBa_Activity.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
                     onBackPressed();
+                }
+                else{
+                    BitmapDrawable bitmapDrawable = (BitmapDrawable) avatar.getDrawable();
+                    Bitmap bitmap = bitmapDrawable.getBitmap();
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                    byte[] hinh = byteArrayOutputStream.toByteArray();
+
+                    String sdt = sodienthoai.getText().toString().trim();
+                    MainActivity.database.QueryData("UPDATE DanhBa SET Ten='"+ten.getText().toString().trim()
+                            +"' , SoDienThoai='"+sdt+"' , NgaySinh='"+ngaysinh.getText().toString().trim()
+                            +"' , DiaChi='"+diachi.getText().toString().trim()
+                            +"' , Email='"+email.getText().toString().trim()
+                            +"' , MangXaHoi='"+mxh.getText().toString().trim()+"' WHERE id="+_id);
+                    Toast.makeText(ThemDanhBa_Activity.this, "Sửa thành công"+ten.getText().toString(), Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
             default:break;
@@ -203,5 +212,36 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Intent intent=getIntent();
+        Bundle bundle=intent.getExtras();
+        if(bundle!=null)
+        {
+            sodienthoai.setText(bundle.getString("sdt"));
+            _id=bundle.getInt("id");
+        }
+        if(_id!=-1)
+        {
+            Cursor cursor=MainActivity.database.GetData("SELECT * FROM DanhBa WHERE id="+_id);
+            if(cursor.moveToFirst())
+            {
+                ten.setText(cursor.getString(cursor.getColumnIndex("Ten")));
+                sodienthoai.setText(cursor.getString(cursor.getColumnIndex("SoDienThoai")));
+                ngaysinh.setText(cursor.getString(cursor.getColumnIndex("NgaySinh")));
+                email.setText(cursor.getString(cursor.getColumnIndex("Email")));
+                mxh.setText(cursor.getString(cursor.getColumnIndex("MangXaHoi")));
+                diachi.setText(cursor.getString(cursor.getColumnIndex("DiaChi")));
+
+                byte[]hinhanh=cursor.getBlob(cursor.getColumnIndex("HinhAnh"));
+                Bitmap bitmap=BitmapFactory.decodeByteArray(hinhanh,0,hinhanh.length);
+                avatar.setImageBitmap(bitmap);
+            }
+        }
+
     }
 }

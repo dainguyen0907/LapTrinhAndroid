@@ -43,27 +43,30 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tên danh bạ">
+                android:text="Tên danh bạ"
+                android:id="@+id/txt_ten_db">
             </TextView>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Số điện thoại">
+                android:text="Số điện thoại"
+                android:id="@+id/txt_sdt_db">
             </TextView>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:textAlignment="center">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_like"
-                android:text="Like">
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:cardCornerRadius="25dp"
+            >
+            <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/btn_like"
+                android:src="@drawable/heart"
+            android:text="Like"
+            />
+        </androidx.cardview.widget.CardView>
 
-            </Button>
-        </LinearLayout>
 
 
     </LinearLayout>
@@ -109,7 +112,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Email"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:id="@+id/txt_mail_db"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -127,8 +131,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ngáyinh"
-                android:layout_weight="1"/>
+                android:text="Ngày Sinh"
+                android:layout_weight="1"
+                android:id="@+id/txt_ngaysinh_db"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -148,7 +153,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Diachi" />
+                android:text="Địa chỉ"
+                android:id="@+id/txt_diachi_db"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -160,7 +166,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="@string/fa_phone_solid"
+                android:text="@string/fa_user_friends_solid"
                 android:textAlignment="center"
                 app:solid_icon="true"></info.androidhive.fontawesome.FontTextView>
 
@@ -168,7 +174,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Facebook" />
+                android:text="Trang web"
+                android:id="@+id/txt_mxh_db"/>
         </LinearLayout>
 
     </LinearLayout>

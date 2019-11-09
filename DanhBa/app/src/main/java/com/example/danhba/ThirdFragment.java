@@ -1,10 +1,12 @@
 package com.example.danhba;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import androidx.annotation.NonNull;
@@ -44,6 +46,15 @@ public class ThirdFragment extends Fragment {
         }
 
         customListAdapter.notifyDataSetChanged();
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                DanhBa d=arrayList.get(position);
+                Intent intent=new Intent(getActivity(),ChiTiet_Activity.class);
+                intent.putExtra("id",d.getId());
+                startActivity(intent);
+            }
+        });
 
     }
 }
