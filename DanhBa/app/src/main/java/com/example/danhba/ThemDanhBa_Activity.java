@@ -57,6 +57,7 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
         DesignNgaySinhBox();
 
         registerForContextMenu(avatar);
+        LoadID();
 
     }
     private void AnhXa()
@@ -125,12 +126,12 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
                     byte[] hinh = byteArrayOutputStream.toByteArray();
 
                     String sdt = sodienthoai.getText().toString().trim();
-                    MainActivity.database.QueryData("UPDATE DanhBa SET Ten='"+ten.getText().toString().trim()
-                            +"' , SoDienThoai='"+sdt+"' , NgaySinh='"+ngaysinh.getText().toString().trim()
-                            +"' , DiaChi='"+diachi.getText().toString().trim()
-                            +"' , Email='"+email.getText().toString().trim()
-                            +"' , MangXaHoi='"+mxh.getText().toString().trim()+"' WHERE id="+_id);
-                    Toast.makeText(ThemDanhBa_Activity.this, "Sửa thành công"+ten.getText().toString(), Toast.LENGTH_SHORT).show();
+                    MainActivity.database.updateDataDanhBa(ten.getText().toString().trim(),sdt,hinh,email.getText().toString().trim(),
+                            diachi.getText().toString().trim(),
+                            ngaysinh.getText().toString().trim(),
+                            mxh.getText().toString().trim(),
+                            _id);
+                    Toast.makeText(ThemDanhBa_Activity.this, "Sửa thành công", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -217,7 +218,10 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
 
+    public void LoadID()
+    {
         Intent intent=getIntent();
         Bundle bundle=intent.getExtras();
         if(bundle!=null)
@@ -242,6 +246,5 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
                 avatar.setImageBitmap(bitmap);
             }
         }
-
     }
 }

@@ -44,6 +44,25 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
+    public void updateDataDanhBa(String ten, String sodienthoai, byte[] hinhanh, String Email, String DiaChi, String ngaysinh, String mxh, int id)
+    {
+        SQLiteDatabase database=getWritableDatabase();
+        String sql="UPDATE DanhBa SET Ten=?, SoDienThoai=?, HinhAnh=?, NgaySinh=?,DiaChi=?,Email=?, MangXaHoi=? WHERE ID=?";
+        SQLiteStatement statement=database.compileStatement(sql);
+        statement.clearBindings();
+
+        statement.bindString(1,ten);
+        statement.bindString(2,sodienthoai);
+        statement.bindBlob(3,hinhanh);
+        statement.bindString(4,ngaysinh);
+        statement.bindString(5,Email);
+        statement.bindString(6,DiaChi);
+        statement.bindString(7,mxh);
+        statement.bindLong(8,id);
+
+        statement.executeUpdateDelete();
+
+    }
 
     //Truy vấn select
     public Cursor GetData(String sqlCommand){
