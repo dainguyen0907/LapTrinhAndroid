@@ -17,40 +17,50 @@
             android:background="#FFC107"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
-            app:title="Thêm danh bạ"
+            app:title="Cập nhật danh bạ"
             app:titleTextColor="#FFFFFF" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-            <ImageButton
-                android:id="@+id/imageAvatar"
+            <androidx.cardview.widget.CardView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="24dp"
-                android:background="@null"
-                android:scaleType="fitXY"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/user" />
+                app:cardCornerRadius="50dp"
+                android:id="@+id/cardView">
+                <ImageButton
+                    android:id="@+id/imageAvatar"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@null"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/user" />
+            </androidx.cardview.widget.CardView>
 
             <EditText
                 android:id="@+id/txt_ten"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="32dp"
                 android:ems="10"
                 android:hint="Tên "
-                android:maxLength="10"
+                android:drawableLeft="@drawable/ic_person_black_24dp"
+                android:drawablePadding="5dp"
                 android:inputType="textPersonName"
+                android:maxLength="10"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageAvatar" />
+                app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
             <EditText
                 android:id="@+id/txt_dienthoai"
                 android:layout_width="0dp"
@@ -60,6 +70,8 @@
                 android:layout_marginEnd="32dp"
                 android:ems="10"
                 android:hint="Số điện thoại"
+                android:drawableLeft="@drawable/ic_call_24dp"
+                android:drawablePadding="5dp"
                 android:inputType="phone"
                 android:maxLength="15"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -75,6 +87,8 @@
                 android:layout_marginEnd="32dp"
                 android:ems="10"
                 android:hint="Ngày sinh"
+                android:drawableLeft="@drawable/ic_perm_contact_calendar_black_24dp"
+                android:drawablePadding="5dp"
                 android:inputType="date"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -90,6 +104,8 @@
                 android:layout_marginEnd="32dp"
                 android:ems="10"
                 android:hint="Địa chỉ"
+                android:drawableLeft="@drawable/ic_pin_drop_black_24dp"
+                android:drawablePadding="5dp"
                 android:maxLength="100"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -105,6 +121,8 @@
                 android:layout_marginEnd="32dp"
                 android:ems="10"
                 android:hint="Email"
+                android:drawablePadding="10dp"
+                android:drawableLeft="@drawable/ic_email_black_24dp"
                 android:maxLength="100"
                 android:inputType="textEmailAddress"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -122,6 +140,8 @@
                 android:layout_marginEnd="32dp"
                 android:ems="10"
                 android:hint="Mạng xã hội"
+                android:drawableLeft="@drawable/ic_public_black_24dp"
+                android:drawablePadding="5dp"
                 android:maxLength="100"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"

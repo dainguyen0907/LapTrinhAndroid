@@ -50,6 +50,7 @@ public class FirstFragment extends Fragment {
         return rootView;
     }
 
+
     @Override
     public void onResume() {
 
@@ -61,8 +62,10 @@ public class FirstFragment extends Fragment {
             listView.setAdapter(callLogAdapter);
 
             Cursor cursor=getActivity().managedQuery(CallLog.Calls.CONTENT_URI,null,null,null,CallLog.Calls.DATE + " DESC");
-            while (cursor.moveToNext())
+            int count=0;
+            while (cursor.moveToNext()&& count!=50)
             {
+                count++;
                 String number=cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
                 String calltype=cursor.getString(cursor.getColumnIndex(CallLog.Calls.TYPE));
                 Date Strdate=new Date(cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)));

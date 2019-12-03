@@ -4,20 +4,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.AnalogClock;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -49,7 +44,7 @@ public class SecondFragment extends Fragment {
         customListAdapter =new CustomListAdapter(arrayList,R.layout.itemgridviewdanhba,getActivity());
         gridView.setAdapter(customListAdapter);
 
-        Cursor cursor= MainActivity.database.GetData("SELECT * FROM DanhBa WHERE User=0 ORDER BY Ten ASC");
+        Cursor cursor= MainActivity.database.GetData("SELECT * FROM DanhBa  ORDER BY Ten ASC");
         while(cursor.moveToNext()){
             arrayList.add(new DanhBa(
                     cursor.getString(1),

@@ -16,14 +16,9 @@
         android:id="@+id/add_user_from_sim"
         android:checkable="false"
         android:icon="@android:drawable/ic_lock_silent_mode"
-        android:title="Thêm liên hệ từ sim"
+        android:title="Thêm liên hệ từ bộ nhớ"
         app:showAsAction="withText"/>
-    <item
-        android:id="@+id/choose_item"
-        android:checkable="false"
-        android:icon="@android:drawable/ic_lock_silent_mode"
-        android:title="Chọn liên hệ"
-        app:showAsAction="withText"/>
+
 
 
 

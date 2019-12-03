@@ -75,20 +75,22 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
-        <Button
+        <ImageButton
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Gọi"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_call_black_24dp"
+            android:background="#6272FB"
             android:id="@+id/btn_goi"
             android:layout_weight="1"
-            ></Button>
+            ></ImageButton>
 
-        <Button
+        <ImageButton
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nhắn tin"
+            android:layout_height="50dp"
+            android:background="#62FB75"
+            android:src="@drawable/ic_chat_black_24dp"
             android:id="@+id/btn_nhantin"
-            android:layout_weight="1"></Button>
+            android:layout_weight="1"></ImageButton>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

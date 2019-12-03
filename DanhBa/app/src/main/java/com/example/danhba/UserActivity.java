@@ -3,6 +3,7 @@ package com.example.danhba;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import android.app.DatePickerDialog;
@@ -17,63 +18,47 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
-
-import androidx.appcompat.widget.Toolbar;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
 
-
 import info.androidhive.fontawesome.FontDrawable;
 
-public class ThemDanhBa_Activity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity {
 
     Toolbar toolbar;
-    EditText  ten, sodienthoai, diachi, email, mxh,ngaysinh;
-    int _id=-1;
+    ImageView imageView;
+    EditText name,phone,date,email,address,web;
 
-    ImageButton avatar;
     DatePickerDialog.OnDateSetListener datePickerDialog;
 
     int REQUEST_CODE_CAMERA = 123;
     int REQUEST_CODE_PICTURE = 456;
+
+    int _id=-1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_them_danh_ba_);
+        setContentView(R.layout.activity_user);
 
         AnhXa();
         ActionBar();
         DesignNgaySinhBox();
+        registerForContextMenu(imageView);
 
-        registerForContextMenu(avatar);
         LoadID();
-
     }
-    private void AnhXa()
-    {
-        toolbar=findViewById(R.id.toolbarMain);
-        ngaysinh=findViewById(R.id.txt_ngaysinh);
-        ten=findViewById(R.id.txt_ten);
-        sodienthoai=findViewById(R.id.txt_dienthoai);
-        diachi=findViewById(R.id.txt_diachi);
-        email=findViewById(R.id.txt_email);
-        mxh=findViewById(R.id.txt_mxh);
-        avatar=findViewById(R.id.imageAvatar);
 
-    }
-    private void ActionBar()
-    {
+    private void ActionBar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         FontDrawable drawable=new FontDrawable(this,R.string.fa_arrow_left_solid,true,false);
@@ -82,7 +67,23 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(drawable);
     }
 
+    private void AnhXa() {
+        toolbar=findViewById(R.id.toolbarUser);
+        imageView=findViewById(R.id.img_avatar_user);
+        name=findViewById(R.id.txt_name_user);
+        phone=findViewById(R.id.txt_phone_user);
+        date=findViewById(R.id.txt_birthday_user);
+        email=findViewById(R.id.txt_email_user);
+        address=findViewById(R.id.txt_address_user);
+        web=findViewById(R.id.txt_web_user);
+    }
+
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.actionbarmenu_add,menu);
+        return true;
+    }
+
     public boolean onOptionsItemSelected(@NonNull MenuItem item)  {
         switch (item.getItemId())
         {
@@ -91,47 +92,30 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
                 return true;
             case R.id.add:
             {
-                if(TextUtils.isEmpty(ten.getText().toString().trim()))
+                if(TextUtils.isEmpty(name.getText().toString().trim()))
                 {
-                    Toast.makeText(ThemDanhBa_Activity.this, "Chưa nhập tên", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserActivity.this, "Chưa nhập tên", Toast.LENGTH_SHORT).show();
                 }
-                else if(TextUtils.isEmpty(sodienthoai.getText().toString().trim()))
+                else if(TextUtils.isEmpty(phone.getText().toString().trim()))
                 {
-                    Toast.makeText(ThemDanhBa_Activity.this, "Chưa nhập số điện thoại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserActivity.this, "Chưa nhập số điện thoại", Toast.LENGTH_SHORT).show();
                 }
                 else if(_id==-1){
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable) avatar.getDrawable();
-                    Bitmap bitmap = bitmapDrawable.getBitmap();
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 5, byteArrayOutputStream);
-                    byte[] hinh = byteArrayOutputStream.toByteArray();
-
-                    String sdt = sodienthoai.getText().toString().trim();
-                    MainActivity.database.insertDataDanhBa(
-                            ten.getText().toString().trim(),
-                            sdt,
-                            hinh,
-                            email.getText().toString().trim(),
-                            diachi.getText().toString().trim(),
-                            ngaysinh.getText().toString().trim(),
-                            mxh.getText().toString().trim());
-                    Toast.makeText(ThemDanhBa_Activity.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
-                    onBackPressed();
                 }
                 else{
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable) avatar.getDrawable();
+                    BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
                     Bitmap bitmap = bitmapDrawable.getBitmap();
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 5, byteArrayOutputStream);
                     byte[] hinh = byteArrayOutputStream.toByteArray();
 
-                    String sdt = sodienthoai.getText().toString().trim();
-                    MainActivity.database.updateDataDanhBa(ten.getText().toString().trim(),sdt,hinh,email.getText().toString().trim(),
-                            diachi.getText().toString().trim(),
-                            ngaysinh.getText().toString().trim(),
-                            mxh.getText().toString().trim(),
+                    String sdt = phone.getText().toString().trim();
+                    MainActivity.database.updateNguoiDung(name.getText().toString().trim(),sdt,hinh,email.getText().toString().trim(),
+                            address.getText().toString().trim(),
+                            date.getText().toString().trim(),
+                            web.getText().toString().trim(),
                             _id);
-                    Toast.makeText(ThemDanhBa_Activity.this, "Sửa thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -139,14 +123,10 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.actionbarmenu_add,menu);
-        return true;
-    }
     public void DesignNgaySinhBox()
     {
-        ngaysinh.setShowSoftInputOnFocus(false);
-        ngaysinh.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        date.setShowSoftInputOnFocus(false);
+        date.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 Calendar cal=Calendar.getInstance();
@@ -154,12 +134,12 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
                 int month=cal.get(Calendar.MONTH);
                 int day=cal.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog dialog=new DatePickerDialog(ThemDanhBa_Activity.this,android.R.style.Theme_Holo_Light_Dialog_MinWidth,datePickerDialog,year,month,day);
+                DatePickerDialog dialog=new DatePickerDialog(UserActivity.this,android.R.style.Theme_Holo_Light_Dialog_MinWidth,datePickerDialog,year,month,day);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
         });
-        ngaysinh.setOnClickListener(new View.OnClickListener() {
+        date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar cal=Calendar.getInstance();
@@ -167,7 +147,7 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
                 int month=cal.get(Calendar.MONTH);
                 int day=cal.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog dialog=new DatePickerDialog(ThemDanhBa_Activity.this,android.R.style.Theme_Holo_Light_Dialog_MinWidth,datePickerDialog,year,month,day);
+                DatePickerDialog dialog=new DatePickerDialog(UserActivity.this,android.R.style.Theme_Holo_Light_Dialog_MinWidth,datePickerDialog,year,month,day);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
@@ -178,18 +158,11 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
 
                 month = month + 1;
 
-                String date = month + "/" + dayOfMonth + "/" + year;
-                ngaysinh.setText(date);
+                String day = month + "/" + dayOfMonth + "/" + year;
+                date.setText(day);
             }
         };
     }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        getMenuInflater().inflate(R.menu.image_menucontext,menu);
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
-
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId())
@@ -212,7 +185,7 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
         if(requestCode==REQUEST_CODE_CAMERA && resultCode== RESULT_OK && data!=null)
         {
             Bitmap bitmap=(Bitmap) data.getExtras().get("data");
-            avatar.setImageBitmap(bitmap);
+            imageView.setImageBitmap(bitmap);
         }
         if(requestCode==REQUEST_CODE_PICTURE && resultCode==RESULT_OK && data!=null)
         {
@@ -220,17 +193,12 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
             try {
                 InputStream inputStream=getContentResolver().openInputStream(uri);
                 Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
-                avatar.setImageBitmap(bitmap);
+                imageView.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     public void LoadID()
@@ -239,25 +207,27 @@ public class ThemDanhBa_Activity extends AppCompatActivity {
         Bundle bundle=intent.getExtras();
         if(bundle!=null)
         {
-            sodienthoai.setText(bundle.getString("sdt"));
             _id=bundle.getInt("id");
         }
         if(_id!=-1)
         {
-            Cursor cursor=MainActivity.database.GetData("SELECT * FROM DanhBa WHERE id="+_id);
+            Cursor cursor=MainActivity.database.GetData("SELECT * FROM NguoiDung WHERE id="+_id);
             if(cursor.moveToFirst())
             {
-                ten.setText(cursor.getString(cursor.getColumnIndex("Ten")));
-                sodienthoai.setText(cursor.getString(cursor.getColumnIndex("SoDienThoai")));
-                ngaysinh.setText(cursor.getString(cursor.getColumnIndex("NgaySinh")));
+                name.setText(cursor.getString(cursor.getColumnIndex("Ten")));
+                phone.setText(cursor.getString(cursor.getColumnIndex("SoDienThoai")));
+                date.setText(cursor.getString(cursor.getColumnIndex("NgaySinh")));
                 email.setText(cursor.getString(cursor.getColumnIndex("Email")));
-                mxh.setText(cursor.getString(cursor.getColumnIndex("MangXaHoi")));
-                diachi.setText(cursor.getString(cursor.getColumnIndex("DiaChi")));
+                web.setText(cursor.getString(cursor.getColumnIndex("MangXaHoi")));
+                address.setText(cursor.getString(cursor.getColumnIndex("DiaChi")));
 
                 byte[]hinhanh=cursor.getBlob(cursor.getColumnIndex("HinhAnh"));
-                Bitmap bitmap=BitmapFactory.decodeByteArray(hinhanh,0,hinhanh.length);
-                avatar.setImageBitmap(bitmap);
+                if(hinhanh.length>0) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(hinhanh, 0, hinhanh.length);
+                    imageView.setImageBitmap(bitmap);
+                }
             }
         }
     }
+
 }

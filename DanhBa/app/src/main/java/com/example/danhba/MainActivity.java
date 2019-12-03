@@ -9,6 +9,8 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.Menu;
@@ -16,7 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -31,6 +35,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import info.androidhive.fontawesome.FontDrawable;
@@ -40,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
+    View headerView;
     public static Database database;
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -48,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout tablayoutcontainer;
     ArrayList<DanhBa>arrayList;
     final int REQUEST_READ_CONTACT=123;
+    int id_user=-1;
+
+    ImageView imfg;
+    TextView name;
+    TextView number;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +69,32 @@ public class MainActivity extends AppCompatActivity {
         ActionBar();
         InitTablayout();
 
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Cursor c=database.GetData("select * from NguoiDung");
+        if(!c.moveToFirst())
+        {
+            Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.drawable.user);
+            ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 5, byteArrayOutputStream);
+            byte[] hinh = byteArrayOutputStream.toByteArray();
+            database.insertUser("G-connect","Phone number",new byte[]{},"","","","");
+        }
+        else
+        {
+            id_user=c.getInt(c.getColumnIndex("Id"));
 
+            byte[]hinhanh=c.getBlob(c.getColumnIndex("HinhAnh"));
+            if(hinhanh.length!=0) {
+                Bitmap bitmap=BitmapFactory.decodeByteArray(hinhanh,0,hinhanh.length);
+                imfg.setImageBitmap(bitmap);
+            }
+            name.setText(c.getString(c.getColumnIndex("Ten")));
+           number.setText(c.getString(c.getColumnIndex("SoDienThoai")));
+        }
     }
 
     private void InitTablayout() {
@@ -95,9 +130,14 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId())
                 {
-                    case R.id.nav_home:
-                        break;
                     case R.id.nav_user:
+                    {
+                        Intent intent=new Intent(MainActivity.this,UserActivity.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putInt("id",id_user);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
                         break;
                     case R.id.nav_exit:
                         finish();
@@ -106,23 +146,9 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        int[] icons = {
-                R.string.fa_home_solid, R.string.fa_user_solid, R.string.fa_sign_out_alt_solid};
-        renderMenuIcons(navigationView.getMenu(), icons, true, false);
     }
 
-    //Set icons cho menu
-    private void renderMenuIcons(Menu menu, int[] icons, boolean isSolid, boolean isBrand) {
-        for (int i = 0; i < menu.size(); i++) {
-            MenuItem menuItem = menu.getItem(i);
-            if (!menuItem.hasSubMenu()) {
-                FontDrawable drawable = new FontDrawable(this, icons[i], isSolid, isBrand);
-                drawable.setTextColor(ContextCompat.getColor(this, android.R.color.holo_orange_light));
-                drawable.setTextSize(22);
-                menu.getItem(i).setIcon(drawable);
-            }
-        }
-    }
+
 
 
     //Ánh xạ controler lên main
@@ -136,6 +162,10 @@ public class MainActivity extends AppCompatActivity {
         searchView=findViewById(R.id.search_view);
         search_gridview=findViewById(R.id.gridview_search);
         tablayoutcontainer=findViewById(R.id.tablayout_container);
+        headerView=navigationView.getHeaderView(0);
+        imfg=headerView.findViewById(R.id.imageViewNavigation);
+        name=headerView.findViewById(R.id.txt_name_navigation);
+        number=headerView.findViewById(R.id.txt_number_navigation);
     }
 
     //Gọi menubar
@@ -186,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
         CustomListAdapter customListAdapter =new CustomListAdapter(arrayList,R.layout.itemgridviewdanhba,this);
         search_gridview.setAdapter(customListAdapter);
 
-        Cursor cursor= MainActivity.database.GetData("SELECT * FROM DanhBa WHERE User=0 AND (Ten LIKE '%"+query+"%' OR SoDienThoai LIKE '%"+query+"%') ORDER BY Ten ASC");
+        Cursor cursor= MainActivity.database.GetData("SELECT * FROM DanhBa WHERE (Ten LIKE '%"+query+"%' OR SoDienThoai LIKE '%"+query+"%') ORDER BY Ten ASC");
         while(cursor.moveToNext()){
             arrayList.add(new DanhBa(
                     cursor.getString(1),
@@ -246,7 +276,10 @@ public class MainActivity extends AppCompatActivity {
         // Tạo database
         database=new Database(this,"danhba.sqlite",null,1);
         //Tạo bảng
-        database.QueryData("CREATE TABLE IF NOT EXISTS DanhBa(Id INTEGER PRIMARY KEY AUTOINCREMENT, Ten VARCHAR(10), SoDienThoai TEXT,HinhAnh BLOB, NgaySinh DATE, Email VARCHAR(100), DiaChi VARCHAR(200), MangXaHoi VARCHAR(100) ,YeuThich BOOLEAN, User BOOLEAN) ");
+        database.QueryData("CREATE TABLE IF NOT EXISTS DanhBa(Id INTEGER PRIMARY KEY AUTOINCREMENT, Ten VARCHAR(10), SoDienThoai TEXT,HinhAnh BLOB, NgaySinh DATE, Email VARCHAR(100), DiaChi VARCHAR(200), MangXaHoi VARCHAR(100) ,YeuThich BOOLEAN)");
+        database.QueryData("CREATE TABLE IF NOT EXISTS NguoiDung(Id INTEGER PRIMARY KEY AUTOINCREMENT, Ten VARCHAR(10), SoDienThoai TEXT,HinhAnh BLOB, NgaySinh DATE, Email VARCHAR(100), DiaChi VARCHAR(200), MangXaHoi VARCHAR(100) )");
+
+
     }
 
     @Override
@@ -257,6 +290,10 @@ public class MainActivity extends AppCompatActivity {
             {
                 if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED)
                 {
+                    Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.drawable.user);
+                    ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 5, byteArrayOutputStream);
+                    byte[] hinh = byteArrayOutputStream.toByteArray();
                     ContentResolver contentResolver=getContentResolver();
                     Cursor cursor=contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
                     while (cursor.moveToNext())
@@ -270,12 +307,12 @@ public class MainActivity extends AppCompatActivity {
                             Phone.moveToFirst();
                             sodienthoai=Phone.getString(Phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         }
-                        Cursor cursorCheck=database.GetData("SELECT * FROM DanhBa WHERE Ten='"+cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))+"' AND SoDienThoai='"+sodienthoai+"' AND User=0");
+                        Cursor cursorCheck=database.GetData("SELECT * FROM DanhBa WHERE Ten='"+cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))+"' AND SoDienThoai='"+sodienthoai+"'");
                         if(cursorCheck.moveToFirst()==false)
                         {
                             database.insertDataDanhBa(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
                                     sodienthoai,
-                                    new byte[]{},"","","","");
+                                    hinh,"","","","");
                         }
                     }
                     Toast.makeText(this,"Cập nhật thành công ",Toast.LENGTH_SHORT).show();

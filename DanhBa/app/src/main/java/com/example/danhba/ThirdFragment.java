@@ -35,7 +35,7 @@ public class ThirdFragment extends Fragment {
         customListAdapter =new CustomListAdapter(arrayList,R.layout.itemgridviewdanhba,getActivity());
         gridView.setAdapter(customListAdapter);
 
-        Cursor cursor= MainActivity.database.GetData("SELECT * FROM DanhBa WHERE User=0 AND YeuThich=1 ORDER BY Ten ASC");
+        Cursor cursor= MainActivity.database.GetData("SELECT * FROM DanhBa WHERE YeuThich=1 ORDER BY Ten ASC");
         while(cursor.moveToNext()){
             arrayList.add(new DanhBa(
                     cursor.getString(1),

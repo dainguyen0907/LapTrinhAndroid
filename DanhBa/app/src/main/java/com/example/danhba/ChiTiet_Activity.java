@@ -34,7 +34,7 @@ public class ChiTiet_Activity extends AppCompatActivity {
     TextView ten,sdt,diachi,ngaysinh,email,mxh;
     ImageView avatar;
     ImageButton like;
-    Button goi,nhantin;
+    ImageButton goi,nhantin;
     Toolbar toolbar;
     String sodienthoai;
     final int REQUEST_CALL=222;
